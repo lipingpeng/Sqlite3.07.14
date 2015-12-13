@@ -4253,8 +4253,7 @@ static void updateAccumulator(Parse *pParse, AggInfo *pAggInfo){//两个参数�
 	if (addrHitTest){//如果addrHitTest不为空,即向虚拟机中添加OP_If的指令失败 
 		sqlite3VdbeJumpHere(v, addrHitTest);//将addrHitTest设置成当前地址
 	}
-}
-、
+} 
 
 
 
@@ -4262,11 +4261,11 @@ static void updateAccumulator(Parse *pParse, AggInfo *pAggInfo){//两个参数�
 /*
 ** Add a single OP_Explain instruction to the VDBE to explain a simple
 ** count(*) query ("SELECT count(*) FROM pTab").
-**添加一个单一的OP_Explain 结构到VDBE ，用来解释一个单独的count(*)查询.
+**在虚拟机VDBE中添加一个OP_Explain 指令 ，用来解释一个简单的count(*)查询.
 */
 #ifndef SQLITE_OMIT_EXPLAIN
 static void explainSimpleCount(
-	Parse *pParse,                  /* 解析上下文 */
+	Parse *pParse,                  /* SQL语句上下文解析器 */
 	Table *pTab,                    /* 正在查询的表*/
 	Index *pIdx                     /* 用于优化扫描的索引 */
 	){
