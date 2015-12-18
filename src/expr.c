@@ -2240,6 +2240,7 @@ void sqlite3ExprCacheClear(Parse *pParse){
 /*
 ** Record the fact that an affinity change has occurred on iCount
 ** registers starting with iStart.
+记录这样一个事实，在Icount寄存器中，从地址istart开始发生了一个亲和性（affinity）变化
 */
 void sqlite3ExprCacheAffinityChange(Parse *pParse, int iStart, int iCount){
   sqlite3ExprCacheRemove(pParse, iStart, iCount);
@@ -2949,6 +2950,10 @@ int sqlite3ExprCodeTemp(Parse *pParse, Expr *pExpr, int *pReg){
 ** results in register target.  The results are guaranteed to appear
 ** in register target.
 */
+/*
+** 产生代码，它将会计算表达式的值，并且把计算结构存储在寄存器（target）中
+*/
+
 int sqlite3ExprCode(Parse *pParse, Expr *pExpr, int target){
   int inReg;
 
@@ -2962,7 +2967,7 @@ int sqlite3ExprCode(Parse *pParse, Expr *pExpr, int target){
       sqlite3VdbeAddOp2(pParse->pVdbe, OP_SCopy, inReg, target);
     }
   }
-  return target;
+  return target;//返回寄存器的值
 }
 
 /*
@@ -4048,6 +4053,7 @@ static int analyzeAggregatesInSelect(Walker *pWalker, Select *pSelect){
 **
 ** This routine should only be called after the expression has been
 ** analyzed by sqlite3ResolveExprNames().
+** 对给定的表达式进行分析，查找聚合函数功能和需要添加到数组pParse->aAgg[]数组中的变量，若有必要，还会在数组pParse->aAgg[]做额外的标记
 */
 void sqlite3ExprAnalyzeAggregates(NameContext *pNC, Expr *pExpr){
   Walker w;
@@ -4062,15 +4068,16 @@ void sqlite3ExprAnalyzeAggregates(NameContext *pNC, Expr *pExpr){
 /*
 ** Call sqlite3ExprAnalyzeAggregates() for every expression in an
 ** expression list.  Return the number of errors.
-**
+**为表达式列表中的每一个表达式都调用sqlite3ExprAnalyzeAggregates()函数，并返回错误数 
 ** If an error is found, the analysis is cut short.
+**如果发现错误，这个分析会中断
 */
 void sqlite3ExprAnalyzeAggList(NameContext *pNC, ExprList *pList){
   struct ExprList_item *pItem;
   int i;
   if( pList ){
     for(pItem=pList->a, i=0; i<pList->nExpr; i++, pItem++){
-      sqlite3ExprAnalyzeAggregates(pNC, pItem->pExpr);
+      sqlite3ExprAnalyzeAggregates(pNC, pItem->pExpr);//对给定的表达式进行分析，查找聚合函数功能和需要添加到数组pParse->aAgg[]数组中的变量，若有必要，还会在数组pParse->aAgg[]做额外的标记
     }
   }
 }
@@ -4108,11 +4115,11 @@ void sqlite3ReleaseTempReg(Parse *pParse, int iReg){
 }
 
 /*
-** Allocate or deallocate a block of nReg consecutive registers
+** Allocate or deallocate a block of nReg consecutive registers//连续分配或释放一块nReg寄存器
 */
 int sqlite3GetTempRange(Parse *pParse, int nReg){
   int i, n;
-  i = pParse->iRangeReg;
+  i = pParse->iRangeReg;//将语法分析树中的
   n = pParse->nRangeReg;
   if( nReg<=n ){
     assert( !usedAsColumnCache(pParse, i, i+n-1) );

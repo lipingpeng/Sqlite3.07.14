@@ -236,9 +236,9 @@ void sqlite3AuthRead(
 ** either SQLITE_OK (zero) or SQLITE_IGNORE or SQLITE_DENY.  If SQLITE_DENY
 ** is returned, then the error count and error message in pParse are
 ** modified appropriately.
-做一个使用给定的代码和参数的授权检查。
-返回要么是SQLITE_OK(零)要么是SQLITE_IGNORE 或SQLITE_DENY。
-如果SQLITE_DENY返回,那么pParse里的错误数和错误消息被适当修改。
+	用给定的代码和参数做一个授权检查。
+	返回要么是SQLITE_OK(零)要么是SQLITE_IGNORE 或SQLITE_DENY。
+	如果返回SQLITE_DENY,那么pParse里的错误数和错误消息被适当修改。
 */
 int sqlite3AuthCheck(
   Parse *pParse,

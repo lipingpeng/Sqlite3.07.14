@@ -1682,7 +1682,7 @@ struct AggInfo {
   int sortingIdxPTab;     /* Cursor number of pseudo-table , pseudo-table的游标号*/
   int nSortingColumn;     /* Number of columns in the sorting index 排序索引中的列的数量*/
   ExprList *pGroupBy;     /* The group by clause , group by 子句*/
-  struct AggInfo_col {    /* For each column used in source tables 对于在源表中使用的每一列*/
+  struct AggInfo_col {    /* For each column used in source tables 对于源表中被使用的每一列*/
     Table *pTab;             /* Source table  源表*/
     int iTable;              /* Cursor number of the source table 源表的游标号*/
     int iColumn;             /* Column number within the source table 源表中所包含的游标数量*/
@@ -1992,7 +1992,7 @@ struct SrcList {
     char *zName;      /* Name of the table 					表的名称*/
     char *zAlias;     /* The "B" part of a "A AS B" phrase.  zName is the "A" 	"A AS B"子句中"B"部分，zName是"A"*/
     Table *pTab;      /* An SQL table corresponding to zName 			对应zName的SQL表*/
-    Select *pSelect;  /* A SELECT statement used in place of a table name 	代替表名使用SELECT语句*/
+    Select *pSelect;  /* A SELECT statement used in place of a table name 	用来代替表名的SELECT语句*/
     int addrFillSub;  /* Address of subroutine to manifest a subquery 		实现子查询的子程序地址*/
     int regReturn;    /* Register holding return address of addrFillSub 	寄存器保存addrFillSub返回地址*/
     u8 jointype;      /* Type of join between this able and the previous 	这个表和之前表的的连接类型*/
@@ -2206,7 +2206,7 @@ struct Select {
   ExprList *pGroupBy;    /* The GROUP BY clause 				GROUP BY子句*/
   Expr *pHaving;         /* The HAVING clause 					HAVING子句*/
   ExprList *pOrderBy;    /* The ORDER BY clause 				ORDER BY子句*/
-  Select *pPrior;        /* Prior select in a compound select statement 	在复合SELECT语句之前选择*/
+  Select *pPrior;        /* Prior select in a compound select statement 	在复合SELECT语句中优先级高的语句*/
   Select *pNext;         /* Next select to the left in a compound 		接下来在复合语句中选择左侧*/
   Select *pRightmost;    /* Right-most select in a compound select statement 	最右边一个SELECT语句的select*/
   Expr *pLimit;          /* LIMIT expression. NULL means not used. 		LIMIT表达式，NULL表示未使用*/
@@ -2334,7 +2334,7 @@ struct TriggerPrg {
 ** list.
 */
 struct Parse {
-  sqlite3 *db;         /* The main database structure 				主数据结构*/
+  sqlite3 *db;         /* The main database structure 				主数据库结构*/
   char *zErrMsg;       /* An error message 					错误消息*/
   Vdbe *pVdbe;         /* An engine for executing database bytecode 		执行数据库字节码的引擎*/
   int rc;              /* Return code from execution 				返回代码的执行*/
@@ -2395,13 +2395,13 @@ struct Parse {
 
   int nVar;                 /* Number of '?' variables seen in the SQL so far 	目前为止在SQL中可见的"?"变量数量*/
   int nzVar;                /* Number of available slots in azVar[] 		在azVar[]中可用测试器数量*/
-  u8 explain;               /* True if the EXPLAIN flag is found on the query 	如果查询时发现EXPLAIN标志*/
+  u8 explain;                   /* True if the EXPLAIN flag is found on the query 	如果查询时发现EXPLAIN标志*/
 #ifndef SQLITE_OMIT_VIRTUALTABLE
   u8 declareVtab;           /* True if inside sqlite3_declare_vtab() 		如果在sqlite3_declare_vtab()中*/
-  int nVtabLock;            /* Number of virtual tables to lock 		锁住的虚表数量*/
+  int nVtabLock;            /* Number of virtual tables to lock 		     锁住的虚表数量*/
 #endif
-  int nAlias;               /* Number of aliased result set columns 		设置列的别名结果集数量*/
-  int nHeight;              /* Expression tree height of current sub-select 	表达式数当前子选择的高度*/
+  int nAlias;               /* Number of aliased result set columns 		 设置列的别名结果集数量*/
+  int nHeight;              /* Expression tree height of current sub-select  当前子查询的表达式树高度*/
 #ifndef SQLITE_OMIT_EXPLAIN
   int iSelectId;            /* ID of current select for EXPLAIN output 		EXPLAIN输出的当前选择的ID*/
   int iNextSelectId;        /* Next available select ID for EXPLAIN output 	EXPLAIN输出的下一个可用的选择ID*/

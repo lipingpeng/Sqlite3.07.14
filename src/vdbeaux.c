@@ -133,14 +133,14 @@ static int growOpArray(Vdbe *p){
 /*
 ** Add a new instruction to the list of instructions current in the
 ** VDBE.  Return the address of the new instruction.
-在VDBE中添加一个新的指令到当前列表中
-，返回新的指令的地址。
+在虚拟机的现有指令集中添加一条新指令
+，并返回新的指令的地址。
 **
 ** Parameters://参数
 **
 **    p               Pointer to the VDBE//参数p用于指向VDBE
 **
-**    op              The opcode for this instruction//参数op用于指向指令的操作码
+**    op              The opcode for this instruction//op是当前指令的操作码
 **
 **    p1, p2, p3      Operands//操作参数p1，p2，p3
 **
@@ -194,18 +194,18 @@ int sqlite3VdbeAddOp2(Vdbe *p, int op, int p1, int p2){
 
 /*
 ** Add an opcode that includes the p4 value as a pointer.
-添加一个包含 p4 值作为指针的操作码
+添加一个把 p4 值作为指针的操作码
 */
 int sqlite3VdbeAddOp4(
-  Vdbe *p,            /* Add the opcode to this VM 添加到这个虚拟机的操作码 */
-  int op,             /* The new opcode 定义一个新参数op */
+  Vdbe *p,            /* Add the opcode to this VM 将操作码添加到该虚拟机中 */
+  int op,             /* The new opcode 定义一个操作码 */
   int p1,             /* The P1 operand 操作数p1*/
   int p2,             /* The P2 operand 操作数p2*/
   int p3,             /* The P3 operand 操作数p3*/
   const char *zP4,    /* The P4 operand 操作数p4*/
   int p4type          /* P4 operand type P4 操作数类型为int型*/
 ){
-  int addr = sqlite3VdbeAddOp3(p, op, p1, p2, p3);
+  int addr = sqlite3VdbeAddOp3(p, op, p1, p2, p3);//
   sqlite3VdbeChangeP4(p, addr, zP4, p4type);
   return addr;
 }
@@ -245,27 +245,26 @@ int sqlite3VdbeAddOp4Int(
 }
 
 /*
-** Create a new symbolic label for an instruction that has yet to be
-** coded.  The symbolic label is really just a negative number.  The
+** symbolic label is really just a negative number.  The
 ** label can be used as the P2 value of an operation.  Later, when
 ** the label is resolved to a specific address, the VDBE will scan
 ** through its operation list and change all values of P2 which match
 ** the label into the resolved address.
-创建一个还没有被编码的新的符号标签的指令，这个符号标签只是仅仅表示一个负数
+创建一个还没有被编码的新的符号标签的指令.这个符号标签只是仅仅表示一个负数
 这个标签可以被用作操作的 P2 值。然后，当标签解析为一个特定的地址，VDBE 将通过其操作列表扫描并更改 P2 的所有值
 与之匹配标签的解决地址。
 **
 ** The VDBE knows that a P2 value is a label because labels are
-** always negative and P2 values are suppose to be non-negative.
+** always negative and P2 values are suppose	eOp to be non-negative.
 ** Hence, a negative P2 value is a label that has yet to be resolved.
 VDBE 知道 P2 值是一个标签，因为标签总是负数，P2 值是假设为非负数。
-因此，一个负的 P2 值是一个尚未解决的标签。
+因此，一个负的 P2 值是一个尚未解析的标签。
 **
 ** Zero is returned if a malloc() fails.如果函数malloc () 出现错误则返回零。
 */
-int sqlite3VdbeMakeLabel(Vdbe *p){
+int sqlite3VdbeMakeLabel(Vdbe *p){//struct Vdbe 定义了一个虚拟机实体的数据结构
   int i = p->nLabel++;
-  assert( p->magic==VDBE_MAGIC_INIT );
+  assert( p->magic==VDBE_MAGIC_INIT ); 
   if( (i & (i-1))==0 ){
     p->aLabel = sqlite3DbReallocOrFree(p->db, p->aLabel, 
                                        (i*2+1)*sizeof(p->aLabel[0]));
@@ -280,7 +279,7 @@ int sqlite3VdbeMakeLabel(Vdbe *p){
 ** Resolve label "x" to be the address of the next instruction to
 ** be inserted.  The parameter "x" must have been obtained from
 ** a prior call to sqlite3VdbeMakeLabel().
-解决标签“x”给下一条指令的地址插入。参数“x”必须从
+解析标签“x”为下一条被插入指令的地址。参数“x”必须从
 之前调用的函数sqlite3VdbeMakeLabel()中。获得.
 */
 void sqlite3VdbeResolveLabel(Vdbe *p, int x){
@@ -623,7 +622,7 @@ void sqlite3VdbeChangeP5(Vdbe *p, u8 val){
 /*
 ** Change the P2 operand of instruction addr so that it points to
 ** the address of the next instruction to be coded.
-更改的 P2 操作数的指令地址，以便它指向下一条指令进行编码的地址。
+   更改指令 addr 的 操作数 P2 ，以便它指向下一条将要编码的指令的地址。
 */
 void sqlite3VdbeJumpHere(Vdbe *p, int addr){
   assert( addr>=0 || p->db->mallocFailed );
@@ -741,15 +740,15 @@ void sqlite3VdbeChangeToNoop(Vdbe *p, int addr){
 ** This routine is useful when a large program is loaded from a
 ** static array using sqlite3VdbeAddOpList but we want to make a
 ** few minor changes to the program.
-为一个特定的指令改变操作数P1的值。当一个大的程序被从一个使用
-sqlite3VdbeAddOpList的静态数组加载时是非常有用的，但是我们想对这个程序做
+ 为一个特定的指令改变操作数P4的值。当一个大的程序被从一个使用
+  sqlite3VdbeAddOpList的静态数组加载时是非常有用的，但是我们想对这个程序做
 一个细微的改变。
 **
 ** If n>=0 then the P4 operand is dynamic, meaning that a copy of
 ** the string is made into memory obtained from sqlite3_malloc().
 ** A value of n==0 means copy bytes of zP4 up to and including the
 ** first null byte.  If n>0 then copy n+1 bytes of zP4.
-如果n > = 0那么操作数P4是动态的,意思是从sqlite3_malloc()获得的字符串被复制到内存中。
+如果n > = 0那么操作数P4是动态变量,意思是从sqlite3_malloc()获得的字符串被复制到内存中。
 n = = 0意味着复制zP4的字节，包括它的第一个空字节。如果n > 0那么复制n + 1个zP4字节。
 **
 ** If n==P4_KEYINFO it means that zP4 is a pointer to a KeyInfo structure.
