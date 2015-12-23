@@ -21,7 +21,7 @@
 ** 跟踪输出宏
 */
 
-#if SELECTTRACE_ENABLED //预编译指令
+#if SELECTTRACE_ENABLED // 预编译指令
 /***/ int sqlite3SelectTrace = 0;
 # define SELECTTRACE(K,P,S,X)  
   if(sqlite3SelectTrace&(K))   
@@ -109,6 +109,10 @@ void sqlite3SelectDestInit(SelectDest *pDest, int eDest, int iParm){/*函数sqli
 ** Allocate a new Select structure and return a pointer to that
 ** structure.
 ** 分配一个新的select结构,并且返回一个指向该结构的指针.
+
+
+对输入的SQL语句进行语法分析，结果 是生成一个包含完整信息的语法树存放在select结构体中
+
 */
 Select *sqlite3SelectNew(
 	Parse *pParse,        /* Parsing context  句法分析*/
@@ -2381,7 +2385,7 @@ static int generateOutputSubroutine(
 	}
 
 	/* Generate the subroutine return
-	*/
+     *创建返回子程序*/
 	sqlite3VdbeResolveLabel(v, iContinue);
 	sqlite3VdbeAddOp1(v, OP_Return, regReturn);
 
@@ -4531,6 +4535,8 @@ int sqlite3Select(
 	**如果有GROUP BY 和 ORDER BY两个子句，的功能是一样的，那么就不执行ORDER BY子句，只执行 GROUP BY子句，因为 ORDER BY子句执行后会将所有元素（elements）排序 
 	** 这是一种优化方式，对最后的结果没有任何影响。使用带SQLITE_TESTCTRL_OPTIMIZER的SQLITE_GroupByOrder标记
 	** 在测试中不断优化。
+	
+	ghb 
 	*/
 	if (sqlite3ExprListCompare(p->pGroupBy, pOrderBy) == 0   /*如果两个表达式值相同且*/
 		&& (db->flags & SQLITE_GroupByOrder) == 0){//如果这两个表达式一致并flags值为SQLITE_GroupByOrder 
@@ -5188,6 +5194,8 @@ int sqlite3Select(
 			**	 + 如果这个查询是"SELECT min(x)"，那么where.c中的循环代码不能处理任何X为空的语句
 			**   +where.c中的优化代码（决定使用哪一个索引或目录）应该要优先处理 ORDER BY子句 
 			** 详细内容请参考where.c 文件中的代码和注释 
+			** 
+			** 彭丽苹 
 			*/ 
 			
 			
